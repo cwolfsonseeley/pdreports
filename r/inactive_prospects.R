@@ -44,11 +44,11 @@ inactive_prospects <- function() {
     filter(contacted_by_proposal_assignment == 0, contacted_by_unit == 0) %>%
     select(hh_id, proposal_id)
   
-  last_unit_contact <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_unit.sql") %>% distinct
-  last_mgo_contact <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_do.sql")
-  primary_manager <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/primary_manager.sql")
-  record_type <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/record_type.sql")
-  mgo_names <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/mg_names.sql")
+  last_unit_contact <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_unit.sql") %>% distinct
+  last_mgo_contact <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_do.sql")
+  primary_manager <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/primary_manager.sql")
+  record_type <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/record_type.sql")
+  mgo_names <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/mg_names.sql")
   
   inactive_prospects <- inactive_prospects %>%
     left_join(mgo_assignments, by = "proposal_id") %>%
