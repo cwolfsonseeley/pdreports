@@ -11,5 +11,6 @@ LazyData: true
 RoxygenNote: 6.1.1
 Imports: 
     dplyr,
-    getcdw (>= 0.1.0.9001),
-    lubridate
+    lubridate,
+    tidyverse,
+    getcdw
