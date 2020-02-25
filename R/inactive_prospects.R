@@ -51,6 +51,7 @@ inactive_prospects <- function() {
   primary_manager <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/primary_manager.sql") %>% dplyr::distinct()
   record_type <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/record_type.sql") %>% dplyr::distinct()
   mgo_names <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/mg_names.sql") %>% dplyr::distinct()
+  strategy <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/strategy.sql") %>% dplyr::distinct()
 
   inactive_prospects <- inactive_prospects %>%
     dplyr::left_join(mgo_assignments, by = "proposal_id") %>%
@@ -69,11 +70,13 @@ inactive_prospects <- function() {
     dplyr::left_join(primary_manager, by = "hh_id") %>%
     dplyr::left_join(record_type, by = "hh_id") %>%
     dplyr::left_join(mgo_names, by = c("assignment_entity_id" = "entity_id")) %>%
+    dplyr::left_join(strategy, by = "hh_id") %>%
     dplyr::mutate(assignment_name = report_name) %>%
     dplyr::select(-report_name) %>%
     dplyr::left_join(mgo_names, by = c("primary_manager" = "entity_id")) %>%
     dplyr::mutate(primary_manager_name = report_name) %>%
-    dplyr::select(hh_id, prospect_name, record_types, proposal_id, proposal_stage, assignment_name, assignment_office_desc, primary_manager_name, last_fundraiser_contact_date, last_assignment_contact_date, last_unit_contact_date) %>%
+    dplyr::mutate(active_campaign_strategy = ifelse(is.na(active_campaign_strategy), "N", active_campaign_strategy)) %>%
+    dplyr::select(hh_id, prospect_name, record_types, proposal_id, proposal_stage, assignment_name, assignment_office_desc, primary_manager_name, active_campaign_strategy, last_fundraiser_contact_date, last_assignment_contact_date, last_unit_contact_date) %>%
     dplyr::distinct()
 
   report_title <- paste0("inactive_prospects", format(today, "%Y%m%d"), ".csv")
