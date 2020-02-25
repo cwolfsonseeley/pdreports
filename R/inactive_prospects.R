@@ -49,6 +49,7 @@ inactive_prospects <- function() {
   primary_manager <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/primary_manager.sql")
   record_type <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/record_type.sql")
   mgo_names <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/mg_names.sql")
+  strategy <- get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/strategy.sql")
 
   inactive_prospects <- inactive_prospects %>%
     left_join(mgo_assignments, by = "proposal_id") %>%
@@ -56,7 +57,8 @@ inactive_prospects <- function() {
     select(hh_id, prospect_name, proposal_id, proposal_stage, assignment_office, assignment_office_desc, assignment_entity_id) %>%
     distinct %>%
     left_join(last_mgo_contact, by = c("hh_id" = "hh_id", "assignment_entity_id" = "contact_credit_entity_id")) %>%
-    left_join(last_unit_contact, by = c("hh_id" = "hh_id", "assignment_office" = "contact_unit"))
+    left_join(last_unit_contact, by = c("hh_id" = "hh_id", "assignment_office" = "contact_unit")) %>%
+    left_join(strategy, by = "hh_id")
 
   last_assignment_contact <- inactive_prospects %>%
     group_by(proposal_id) %>%
@@ -71,7 +73,8 @@ inactive_prospects <- function() {
     select(-report_name) %>%
     left_join(mgo_names, by = c("primary_manager" = "entity_id")) %>%
     mutate(primary_manager_name = report_name) %>%
-    select(hh_id, prospect_name, record_types, proposal_id, proposal_stage, assignment_name, assignment_office_desc, primary_manager_name, last_fundraiser_contact_date, last_assignment_contact_date, last_unit_contact_date) %>%
+    select(hh_id, prospect_name, record_types, proposal_id, proposal_stage, assignment_name, assignment_office_desc, primary_manager_name, active_campaign_strategy, last_fundraiser_contact_date, last_assignment_contact_date, last_unit_contact_date) %>%
+    mutate(active_campaign_strategy = ifelse(is.na(active_campaign_strategy), "N", active_campaign_strategy)) %>%
     distinct
 
   report_title <- paste0("inactive_prospects", format(today, "%Y%m%d"), ".csv")
@@ -79,4 +82,5 @@ inactive_prospects <- function() {
   write.csv(inactive_prospects, report_title, row.names = FALSE)
 
 }
+
 
