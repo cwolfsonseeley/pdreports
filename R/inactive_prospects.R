@@ -7,6 +7,7 @@
 #' inactive_prospects()
 #' @importFrom magrittr %>%
 #' @importFrom getcdw get_cdw
+#' @import dplyr
 #' @export
 
 
