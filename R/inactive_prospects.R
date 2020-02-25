@@ -42,21 +42,21 @@ inactive_prospects <- function() {
 
   inactive_prospects <- assignments_with_contacts %>%
     dplyr::select(hh_id, proposal_id, contacted_by_proposal_assignment, contacted_by_unit) %>%
-    dplyr::distinct %>%
+    dplyr::distinct() %>%
     dplyr::filter(contacted_by_proposal_assignment == 0, contacted_by_unit == 0) %>%
     dplyr::select(hh_id, proposal_id)
 
-  last_unit_contact <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_unit.sql") %>% distinct
-  last_mgo_contact <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_do.sql")
-  primary_manager <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/primary_manager.sql")
-  record_type <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/record_type.sql")
-  mgo_names <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/mg_names.sql")
+  last_unit_contact <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_unit.sql") %>% dplyr::distinct()
+  last_mgo_contact <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/last_contact_by_do.sql") %>% dplyr::distinct()
+  primary_manager <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/primary_manager.sql") %>% dplyr::distinct()
+  record_type <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/record_type.sql") %>% dplyr::distinct()
+  mgo_names <- getcdw::get_cdw("R:/Prospect Development/Prospect Analysis/pdreports/sql/mg_names.sql") %>% dplyr::distinct()
 
   inactive_prospects <- inactive_prospects %>%
     dplyr::left_join(mgo_assignments, by = "proposal_id") %>%
     dplyr::mutate(hh_id = hh_id.x) %>%
     dplyr::select(hh_id, prospect_name, proposal_id, proposal_stage, assignment_office, assignment_office_desc, assignment_entity_id) %>%
-    dplyr::distinct %>%
+    dplyr::distinct() %>%
     dplyr::left_join(last_mgo_contact, by = c("hh_id" = "hh_id", "assignment_entity_id" = "contact_credit_entity_id")) %>%
     dplyr::left_join(last_unit_contact, by = c("hh_id" = "hh_id", "assignment_office" = "contact_unit"))
 
@@ -74,7 +74,7 @@ inactive_prospects <- function() {
     dplyr::left_join(mgo_names, by = c("primary_manager" = "entity_id")) %>%
     dplyr::mutate(primary_manager_name = report_name) %>%
     dplyr::select(hh_id, prospect_name, record_types, proposal_id, proposal_stage, assignment_name, assignment_office_desc, primary_manager_name, last_fundraiser_contact_date, last_assignment_contact_date, last_unit_contact_date) %>%
-    dplyr::distinct
+    dplyr::distinct()
 
   report_title <- paste0("inactive_prospects", format(today, "%Y%m%d"), ".csv")
 
