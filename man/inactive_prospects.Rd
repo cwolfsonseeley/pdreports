@@ -12,5 +12,4 @@ Output list of assigned prospects who have not been contacted in the last year
 \examples{
 ## run reports as of today
 inactive_prospects()
-
 }
