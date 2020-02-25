@@ -11,7 +11,6 @@
 
 
 inactive_prospects <- function() {
-  library(magrittr)
   today <- Sys.Date()
   date <- today - lubridate::years(1)
   date <- format(date, "%Y%m%d")
